@@ -13,7 +13,8 @@
     "react-scripts": "3.0.1",
     "react-toastify": "^5.2.1",
     "styled-components": "^4.3.1",
-    "styled-reset": "^2.0.15"
+    "styled-reset": "^2.0.15",
+    "toastify": "^1.0.12"
   },
   "scripts": {
     "start": "react-scripts start",

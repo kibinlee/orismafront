@@ -4,13 +4,13 @@ import useInput from "../../Hooks/useInput";
 import { useMutation } from "react-apollo-hooks";
 import { LOG_IN, CREATE_ACCOUNT } from "./AuthQueries";
 import { toast } from "react-toastify";
-
 export default () => {
   const [action, setAction] = useState("logIn");
   const username = useInput("");
   const firstName = useInput("");
   const lastName = useInput("");
-  const email = useInput("itni.me@gmail.com");
+  const secret = useInput("");
+  const email = useInput("itnico.las.me@gmail.com");
   const requestSecretMutation = useMutation(LOG_IN, {
     variables: { email: email.value }
   });
@@ -22,16 +22,20 @@ export default () => {
       lastName: lastName.value
     }
   });
-
   const onSubmit = async e => {
     e.preventDefault();
     if (action === "logIn") {
       if (email.value !== "") {
         try {
-          const { requestSecret } = await requestSecretMutation();
+          const {
+            data: { requestSecret }
+          } = await requestSecretMutation();
           if (!requestSecret) {
             toast.error("You dont have an account yet, create one");
             setTimeout(() => setAction("signUp"), 3000);
+          } else {
+            toast.success("Check your inbox for your login secret");
+            setAction("confirm");
           }
         } catch {
           toast.error("Can't request secret, try again");
@@ -47,7 +51,9 @@ export default () => {
         lastName.value !== ""
       ) {
         try {
-          const { createAccount } = await createAccountMutation();
+          const {
+            data: { createAccount }
+          } = await createAccountMutation();
           if (!createAccount) {
             toast.error("Can't create account");
           } else {
@@ -62,7 +68,6 @@ export default () => {
       }
     }
   };
-
   return (
     <AuthPresenter
       setAction={setAction}
@@ -71,6 +76,7 @@ export default () => {
       firstName={firstName}
       lastName={lastName}
       email={email}
+      secret={secret}
       onSubmit={onSubmit}
     />
   );
